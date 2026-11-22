@@ -19,35 +19,44 @@
 <header class="topbar">
   <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
   <nav class="topnav site-nav" aria-label="Main navigation">
-    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html" class="active" aria-current="page">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+    <a href="index.html">Builder</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html" class="active" aria-current="page">News</a><a href="member.html">Member Area</a>
   </nav>
 </header>
 <main class="page">
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
   <p class="kicker">(04) — News</p>
   <h1>News, tips &amp; studio updates.</h1>
   <p class="lead">Short notes on writing better prompts — and what is new in the Studio. Sample posts below; Dorothy and the Graphix team can replace them with real news.</p>
+<div class="chip-row" role="group" aria-label="Filter news">
+    <button class="chip active" data-filter="all">All</button>
+    <button class="chip" data-filter="tips">Prompt tips</button>
+    <button class="chip" data-filter="update">Studio updates</button>
+  </div>
+  <p id="newsCount" class="hint" role="status">3 stories shown.</p>
   <div class="news-list">
-    <article class="news-item">
+    <article class="news-item" data-cat="tips">
       <p class="date">22 November 2026 · Prompt tips</p>
       <h2><a href="video-prompts.html">How to write a UGC video prompt that actually looks like UGC</a></h2>
       <p>Name the camera (iPhone selfie), the light (natural, imperfect), the exact product words — and what <em>not</em> to show. The Maharaja video works because the brief says packet only, no cooking, no redesign. Vague prompts give vague videos; one named detail per line gives a usable one.</p>
     </article>
-    <article class="news-item">
+    <article class="news-item" data-cat="tips">
       <p class="date">22 November 2026 · Prompt tips</p>
       <h2><a href="image-prompts.html">Image prompts: name the background, the light and the format</a></h2>
       <p>A hero shot prompt that only says “premium product photo” will come back generic. Add the background colour, the light, the format (1:1, 9:16, 16:9) and the mood — and a short “avoid” list: no distorted hands, no garbled text, no watermark.</p>
     </article>
-    <article class="news-item">
+    <article class="news-item" data-cat="update">
       <p class="date">22 November 2026 · Studio update</p>
-      <h2><a href="index.html">Prompt Studio v1.1: the fish, the Member Area and full detailed prompts</a></h2>
+      <h2><a href="index.html">Prompt Studio v1.2: a slim menu, a subtle background fish on every page, interactive pages, member reference uploads and a Gemini / Claude backend</a></h2>
       <p>The Studio now has a swimming fish in the hero (like the one on graphixdesign.agency), a seamless orange banner, full detailed prompts on every Generate, a local Member Area where you can check a prompt as an image, and supporting pages for About, Video, Image, News and Contact — with SEO on every page.</p>
     </article>
   </div>
 </main>
 <footer class="footer">
-  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a></nav>
+  <nav class="site-nav footer-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a href="index.html#library">Library</a><a href="index.html#history">History</a><a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a></nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
-  <p class="hint">Built for Graphix Design Agency, Colombo. · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
+<script src="fish.js"></script>
+<script src="pages.js"></script>
 </body>
 </html>

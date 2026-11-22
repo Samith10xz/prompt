@@ -23,20 +23,12 @@
 <header class="topbar">
   <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
   <nav class="topnav site-nav" aria-label="Main navigation">
-    <a href="index.html" class="active" aria-current="page">Builder</a>
-    <a href="about.html">About Us</a>
-    <a href="video-prompts.html">Video Prompts</a>
-    <a href="image-prompts.html">Image Prompts</a>
-    <a href="news.html">News</a>
-    <a href="member.html">Member Area</a>
-    <a href="contact.html">Contact</a>
-    <a href="#library">Library <span id="savedCount" class="pill-count">0</span></a>
-    <a href="#history">History</a>
-    <a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+    <a href="index.html" class="active" aria-current="page">Builder</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a>
   </nav>
 </header>
 
 <section class="hero">
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
   <div class="hero-grid">
     <div>
       <p class="kicker">(01) — Prompt Studio</p>
@@ -46,10 +38,6 @@
         <button class="btn btn-orange" onclick="document.getElementById('brief').focus()">Start a brief →</button>
         <button class="btn btn-ghost" onclick="loadTemplate('maharaja')">Try the Maharaja UGC video</button>
       </div>
-    </div>
-    <div class="hero-visual">
-      <canvas id="fishCanvas" class="fish-canvas" width="520" height="320" role="img" aria-label="An animated orange and cream fish swimming in a loop, like the fish on the Graphix Design Agency website"></canvas>
-      <p class="fish-caption">Swimming, like the fish on graphixdesign.agency — it never stops, and the loop has no jump.</p>
     </div>
   </div>
 </section>
@@ -117,7 +105,16 @@
         <button id="clearKeyBtn" class="btn btn-text">Remove key</button>
         <span id="keyStatus" class="key-status" role="status"></span>
       </div>
-      <p id="aiNote" class="notice"><strong>Honest note:</strong> live AI calls run from your browser, so they depend on the provider allowing browser calls. Gemini keys usually work directly. OpenAI keys often work, but may be blocked by the provider's browser rules. Claude's API does not allow direct browser calls (it needs a server in between), so with Claude linked the studio will tell you that and keep using the built-in generator — it will not pretend the call worked. Without any key, everything still works: the built-in generator produces the full detailed prompt below.</p>
+      <h3 class="label" style="margin-top:20px">Backend — Gemini &amp; Claude, keys on the server (v1.2)</h3>
+      <p class="hint">The optional backend in <code>backend/</code> holds your Gemini and Claude keys on the server — the browser never sees them. That is also the only way Claude works at all: its API does not allow direct browser calls. When a backend URL is set here, Generate tries it first; if it is not set (or has no key), the studio falls back to your browser key, then to the built-in generator — and says so.</p>
+      <label for="backendUrl">Backend URL</label>
+      <input id="backendUrl" type="text" placeholder="e.g. https://api.prompt.graphixdesign.agency — leave blank to use no backend" autocomplete="off">
+      <div class="mode-row">
+        <button id="saveBackendBtn" class="btn btn-orange">Link backend</button>
+        <button id="clearBackendBtn" class="btn btn-text">Remove backend</button>
+      </div>
+      <p class="hint">No backend yet? See <code>backend/README.md</code> for how to deploy it (Hostinger VPS or any Node host) and what it needs. No real API key is needed for the site to work — the built-in generator is always there.</p>
+      <p id="aiNote" class="notice"><strong>Honest note:</strong> live AI calls from your browser depend on the provider allowing browser calls. Gemini keys usually work directly. OpenAI keys often work, but may be blocked by the provider's browser rules. Claude's API does not allow direct browser calls (it needs the backend in between), so with Claude linked only in the browser the studio will tell you that and keep using the built-in generator — it will not pretend the call worked. Without any key, everything still works: the built-in generator produces the full detailed prompt below.</p>
     </section>
 
     <section id="library" class="panel-block">
@@ -153,14 +150,13 @@ Pick a template, or write a brief and hit Generate.</pre>
 </main>
 
 <footer class="footer">
-  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation">
-    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a>
-  </nav>
+  <nav class="site-nav footer-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a href="index.html#library">Library</a><a href="index.html#history">History</a><a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a></nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
   <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
 
 <script src="fish.js"></script>
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

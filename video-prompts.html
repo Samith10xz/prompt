@@ -19,39 +19,40 @@
 <header class="topbar">
   <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
   <nav class="topnav site-nav" aria-label="Main navigation">
-    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html" class="active" aria-current="page">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+    <a href="index.html">Builder</a><a href="video-prompts.html" class="active" aria-current="page">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a>
   </nav>
 </header>
 <main class="page">
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
   <p class="kicker">(02) — Video Prompt Generator</p>
   <h1>Video prompts that hold the shot.</h1>
   <p class="lead">UGC ads, Reels, product demos and explainers — with the hook in the first 2 seconds, the camera and light named, and every clip continuing seamlessly from the one before it.</p>
-  <h2>Start with one sentence</h2>
-  <label class="field-label" for="videoBrief">What video do you need?</label>
-  <textarea id="videoBrief" rows="3" placeholder="e.g. A 10-second Tamil UGC video for Maharaja Roasted Red Rice Flour — Jeewa shows only the packet, says dinner will be pittu, and how it tastes."></textarea>
-  <div class="mode-row"><button class="btn btn-orange" id="goVideoBtn">Build this video prompt in the Studio →</button></div>
-  <h2>What a good video prompt always names</h2>
-  <ul>
-    <li><strong>Hook</strong> — problem first, bold claim, question, before / after, or story.</li>
-    <li><strong>Camera</strong> — iPhone selfie, handheld, tripod, drone or close-up.</li>
-    <li><strong>Lighting</strong> — natural imperfect light beats perfect studio light for UGC.</li>
-    <li><strong>Duration</strong> — 10, 15, 30 or 60 seconds, and how the clips split.</li>
-    <li><strong>Continuity</strong> — same person, same place, same look; no transitions, the next clip starts on the frame the last one ended on.</li>
-  </ul>
+  <h2>Build it here — click the direction</h2>
+  <label class="field-label" for="pageBrief">What video do you need?</label>
+  <textarea id="pageBrief" rows="3" placeholder="e.g. A 10-second Tamil UGC video for Maharaja Roasted Red Rice Flour — Jeewa shows only the packet, says dinner will be pittu, and how it tastes."></textarea>
+  <div id="directionBuilder"></div>
+  <h3>Live preview</h3>
+  <pre id="directionPreview" class="output" style="min-height:120px">Write your one sentence above, then click the chips.</pre>
+  <div class="mode-row"><button class="btn btn-orange" id="goBuilderBtn">Build this video prompt in the Studio →</button></div>
+  <p class="hint">Continuity rule, always on: same person, same place, same look; no transitions — the next clip starts on the frame the last one ended on.</p>
+  <script>
+  window.PAGE_CHIPS = { kind: 'video', groups: [
+    ['Hook', ['Problem first','Bold claim','Question','Before / after','Story']],
+    ['Camera', ['iPhone selfie','Handheld','Tripod','Drone','Close-up']],
+    ['Duration', ['10 seconds','15 seconds','30 seconds','60 seconds']],
+    ['Lighting', ['Natural imperfect','Bright home','Golden hour','Studio']],
+    ['Style', ['UGC realistic','Cinematic','Documentary','Playful']]
+  ]};
+  </script>
   <div class="card"><h3>Try it: Tamil Maharaja UGC video</h3><p>Jeewa, iPhone selfie-style, natural imperfect light, packet only — no cooking, no redesign of the packet. She says “Maharaja varuththa sivappu arisi maa”, dinner will be pittu, and how it tastes.</p><p><a class="btn btn-ghost" href="index.html?kind=video">Open the Maharaja template →</a></p></div>
   <p class="hint">Tools it is tuned for: Runway, Veo, Kling, Pika, Sora.</p>
 </main>
 <footer class="footer">
-  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a></nav>
+  <nav class="site-nav footer-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a href="index.html#library">Library</a><a href="index.html#history">History</a><a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a></nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
-  <p class="hint">Built for Graphix Design Agency, Colombo. · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
-<script>
-document.getElementById('goVideoBtn').addEventListener('click', function () {
-  var b = document.getElementById('videoBrief').value.trim();
-  try { localStorage.setItem('gps_pending_brief', JSON.stringify(b)); } catch (e) {}
-  location.href = 'index.html?kind=video' + (b ? '&brief=' + encodeURIComponent(b) : '');
-});
-</script>
+<script src="fish.js"></script>
+<script src="pages.js"></script>
 </body>
 </html>

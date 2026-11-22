@@ -19,13 +19,33 @@
 <header class="topbar">
   <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
   <nav class="topnav site-nav" aria-label="Main navigation">
-    <a href="index.html">Builder</a><a href="about.html" class="active" aria-current="page">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+    <a href="index.html">Builder</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a>
   </nav>
 </header>
 <main class="page">
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
   <p class="kicker">(01) — About Us</p>
   <h1>Built by a studio that lives in prompts.</h1>
   <p class="lead">Graphix Prompt Studio is the in-house prompt tool of Graphix Design Agency, an independent design studio in Colombo, Sri Lanka — brand, motion, web and search, under one roof.</p>
+<div class="card" data-tabs>
+    <div class="chip-row" role="tablist" aria-label="About Graphix">
+      <button class="chip active" data-tab="story" role="tab" aria-selected="true">Our story</button>
+      <button class="chip" data-tab="work" role="tab" aria-selected="false">What we do</button>
+      <button class="chip" data-tab="how" role="tab" aria-selected="false">How we work</button>
+    </div>
+    <div data-panel="story">
+      <h3>Our story</h3>
+      <p>Graphix started in Colombo as a small brand studio and grew into brand, motion, web and search — 120+ projects shipped, 8 disciplines, 30+ countries. Prompt Studio is the tool we built for ourselves first, then opened up.</p>
+    </div>
+    <div data-panel="work" hidden>
+      <h3>What we do</h3>
+      <p>Brand identity, motion design, web design, WordPress, Shopify, SEO, AEO and GEO. Every discipline feeds the Studio: the prompts here are the same ones we use on client work.</p>
+    </div>
+    <div data-panel="how" hidden>
+      <h3>How we work</h3>
+      <p>Our process is Dive in, Shape, Build, Grow: understand the job, shape the idea, build it, then grow it. A good prompt is the Shape step, written down.</p>
+    </div>
+  </div>
   <h2>Why we built it</h2>
   <p>Every day we write prompts for clients: UGC videos, product shots, social posts, SEO briefs. The difference between a vague prompt and a detailed one is the difference between a usable result and another round of fixes. So we built the tool we wanted for ourselves — describe the job in one sentence, direct it with clicks, and get a full, detailed prompt built to spec.</p>
   <h2>How it works</h2>
@@ -39,12 +59,23 @@
     <h3>Starter content — edit me</h3>
     <p>This page is starter content for Dorothy and the Graphix team to edit: add the real team, real client stories and real numbers (120+ projects shipped, 8 disciplines, 4.9 average rating, 30+ countries) from graphixdesign.agency.</p>
   </div>
+<h2>Questions, answered</h2>
+  <div class="card">
+    <button class="acc-btn" aria-expanded="false">Is Prompt Studio free to use? →</button>
+    <div class="acc-body" hidden><p>Yes — the Builder, the templates and the built-in generator are free. If you link your own AI key, that provider bills you for its own usage.</p></div>
+    <button class="acc-btn" aria-expanded="false">Do my prompts leave my browser? →</button>
+    <div class="acc-body" hidden><p>No. Library and History live in your browser only. If you set up the optional backend, only the prompt you choose to refine is sent to it — and your API key stays on the server.</p></div>
+    <button class="acc-btn" aria-expanded="false">Can I use it for my own clients? →</button>
+    <div class="acc-body" hidden><p>Yes — that is what it is for. Save the prompts you like to your Library and reuse them.</p></div>
+  </div>
   <p><a class="btn btn-orange" href="index.html">Try the Builder →</a> <a class="btn btn-ghost" href="contact.html">Talk to us</a></p>
 </main>
 <footer class="footer">
-  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a></nav>
+  <nav class="site-nav footer-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a href="index.html#library">Library</a><a href="index.html#history">History</a><a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a></nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
-  <p class="hint">Built for Graphix Design Agency, Colombo. · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
+<script src="fish.js"></script>
+<script src="pages.js"></script>
 </body>
 </html>

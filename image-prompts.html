@@ -19,39 +19,39 @@
 <header class="topbar">
   <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
   <nav class="topnav site-nav" aria-label="Main navigation">
-    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html" class="active" aria-current="page">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+    <a href="index.html">Builder</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html" class="active" aria-current="page">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a>
   </nav>
 </header>
 <main class="page">
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
   <p class="kicker">(03) — Image Prompt Generator</p>
   <h1>Image prompts that look shot, not generated.</h1>
   <p class="lead">Product hero shots, social ads and lifestyle photos — with the background colour, the light, the format and the mood all named, so the result comes back clean and on-brand.</p>
-  <h2>Start with one sentence</h2>
-  <label class="field-label" for="imageBrief">What image do you need?</label>
-  <textarea id="imageBrief" rows="3" placeholder="e.g. A premium product hero shot of a courier parcel box on a warm cream background, soft shadows, bold orange accent."></textarea>
-  <div class="mode-row"><button class="btn btn-orange" id="goImageBtn">Build this image prompt in the Studio →</button></div>
-  <h2>What a good image prompt always names</h2>
-  <ul>
-    <li><strong>Style</strong> — photorealistic, cinematic, studio, editorial, minimal or vibrant.</li>
-    <li><strong>Format</strong> — 1:1 square, 9:16 vertical, 16:9 landscape or 4:5 portrait.</li>
-    <li><strong>Lighting</strong> — natural, studio softbox, golden hour or dramatic.</li>
-    <li><strong>Mood</strong> — bold, warm, premium, playful, calm or luxury.</li>
-    <li><strong>What to avoid</strong> — distorted hands, garbled text, watermarks, extra objects.</li>
-  </ul>
+  <h2>Build it here — click the direction</h2>
+  <label class="field-label" for="pageBrief">What image do you need?</label>
+  <textarea id="pageBrief" rows="3" placeholder="e.g. A premium product hero shot of a courier parcel box on a warm cream background, soft shadows, bold orange accent."></textarea>
+  <div id="directionBuilder"></div>
+  <h3>Live preview</h3>
+  <pre id="directionPreview" class="output" style="min-height:120px">Write your one sentence above, then click the chips.</pre>
+  <div class="mode-row"><button class="btn btn-orange" id="goBuilderBtn">Build this image prompt in the Studio →</button></div>
+  <p class="hint">Avoid list, always on: no distorted hands, no garbled text, no watermark, no extra objects.</p>
+  <script>
+  window.PAGE_CHIPS = { kind: 'image', groups: [
+    ['Style', ['Photorealistic','Cinematic','Studio','Editorial','Minimal','Vibrant']],
+    ['Format', ['1:1 square','9:16 vertical','16:9 landscape','4:5 portrait']],
+    ['Mood', ['Bold','Warm','Premium','Playful','Calm','Luxury']],
+    ['Lighting', ['Natural','Studio softbox','Golden hour','Dramatic']]
+  ]};
+  </script>
   <div class="card"><h3>Check the result</h3><p>After you generate a prompt, members can check it as an image: link your own image API key in the Member Area, or copy the prompt into your image tool and compare it against the brief.</p><p><a class="btn btn-ghost" href="member.html">Open the Member Area →</a></p></div>
   <p class="hint">Tools it is tuned for: Midjourney, DALL·E, Firefly, Stable Diffusion, Imagen.</p>
 </main>
 <footer class="footer">
-  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a></nav>
+  <nav class="site-nav footer-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a href="index.html#library">Library</a><a href="index.html#history">History</a><a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a></nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
-  <p class="hint">Built for Graphix Design Agency, Colombo. · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
-<script>
-document.getElementById('goImageBtn').addEventListener('click', function () {
-  var b = document.getElementById('imageBrief').value.trim();
-  try { localStorage.setItem('gps_pending_brief', JSON.stringify(b)); } catch (e) {}
-  location.href = 'index.html?kind=image' + (b ? '&brief=' + encodeURIComponent(b) : '');
-});
-</script>
+<script src="fish.js"></script>
+<script src="pages.js"></script>
 </body>
 </html>

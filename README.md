@@ -27,6 +27,16 @@ Describe the job in one sentence. Direct it with clicks. Get a prompt built to s
 No server, database or API key is needed. Saved prompts and history live in the
 browser's `localStorage`, so nothing leaves the user's device.
 
+## What's new in v1.2 (2026-11-23)
+
+1. **Slim menu** — the top nav keeps only 5 items: Builder, Video Prompts, Image Prompts, News, Member Area. Everything else (About Us, Contact, Library, History, graphixdesign.agency) moved to the footer on every page.
+2. **Every page interactive** — home already had the Builder; now About has tabs + a FAQ accordion, Video and Image pages have direction chips with a live preview that sends the brief to the Builder, News has category filters, Contact has a validated form with a character count, and the Member Area has reference uploads + research.
+3. **Hero fish, redone** — Dorothy did not like the v1.1 fish: too cartoon, and she did not want a framed canvas. v1.2 removes the frame, border and caption entirely. The fish is now a soft, semi-transparent silhouette gliding slowly as a **background** on the right of the hero — low opacity, no eye/mouth/cartoon details, gentle flow lines — behind the hero content, on **every** page's hero, respecting `prefers-reduced-motion`.
+4. **Member Area reference upload + style match** — a member can upload reference images (up to 6) and a short reference video, preview them, describe the reference (subject, product, colours, lighting, camera, mood), and build a "match this reference" block that locks the reference in: same person/product/location, no redesign, no added effects, people or actions (the reference-fidelity rules). Files are previewed in this browser only and never uploaded anywhere.
+5. **Research URL** — a member can paste a URL to research. A static page cannot fetch an arbitrary URL from the browser (CORS), so the backend fetches it server-side and fills in the title/description; without a backend the page says so honestly and the member pastes the title/description, which are then used as research context in the prompt.
+6. **Backend — Gemini (Google AI Studio) + Claude** — new `backend/` folder: a small Node.js server (plain Node, no dependencies) with `POST /api/refine`, `GET /api/research` and `GET /api/health`. API keys live only in the server environment (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`), never in the browser. The frontend tries the backend first when a backend URL is set (in `config.js` or the Connect AI box), then falls back to the browser key, then to the built-in generator — and says which one it used. Claude only works through the backend (its API does not allow direct browser calls). Full details, sources and deployment steps are in `backend/README.md`. The backend is **not** deployed — it needs a real API key from Dorothy first (see below).
+7. **SEO** — unchanged from v1.1 (per-page meta, canonical, sitemap, robots.txt, JSON-LD).
+
 ## What's new in v1.1 (2026-11-22)
 
 1. **Hero fish** — a JavaScript canvas fish (cream body, orange fins) swims on the right of the hero, in the style of the fish / "Scroll to swim" flow on graphixdesign.agency. It loops continuously with no jump at the loop point, and respects `prefers-reduced-motion` (one still frame).
@@ -43,9 +53,15 @@ browser's `localStorage`, so nothing leaves the user's device.
 | --- | --- |
 | `index.html` | The whole app page (Builder) |
 | `style.css` | Black / cream / hot-orange styling |
-| `app.js` | Templates, generation, Library & History, Connect AI |
-| `fish.js` | Hero fish canvas animation |
-| `member.js` | Member Area sign-in + image check |
+| `app.js` | Templates, generation, Library & History, Connect AI, backend-first refine |
+| `config.js` | One place to set the backend URL (`window.GPS_BACKEND_URL`, empty = no backend) |
+| `fish.js` | Subtle background fish silhouette on every hero (v1.2) |
+| `pages.js` | Shared interactivity for the supporting pages (tabs, accordions, filters, direction builders, contact form) |
+| `member.js` | Member Area sign-in + image check + reference upload + research URL |
+| `backend/server.js` | Node backend: Gemini + Claude refine, server-side research fetch |
+| `backend/package.json` | Backend package (no dependencies) |
+| `backend/.env.example` | Backend env vars to copy to `.env` (never commit `.env`) |
+| `backend/README.md` | Backend docs: endpoints, sources, how to deploy on Hostinger/a Node host |
 | `about.html` | About Us (supporting page) |
 | `video-prompts.html` | Video Prompt Generator (supporting page) |
 | `image-prompts.html` | Image Prompt Generator (supporting page) |
@@ -91,12 +107,17 @@ The subdomain already exists in Hostinger hPanel. Its document root is:
 1. In hPanel, open **File Manager** for `graphixdesign.agency`.
 2. Go to `domains/graphixdesign.agency/public_html/prompt`.
 3. Upload all the site files into that folder: `index.html`, `style.css`,
-   `app.js`, `fish.js`, `member.js`, `about.html`, `video-prompts.html`,
+   `app.js`, `config.js`, `fish.js`, `pages.js`, `member.js`, `about.html`, `video-prompts.html`,
    `image-prompts.html`, `news.html`, `contact.html`, `member.html`,
    `sitemap.xml`, `robots.txt` (and `README.md` if you want it on the server)
    — or upload a zip of this folder and extract it there. With Hostinger
    Git auto-deployment connected (Samith10xz/prompt, branch `main`, root
-   `public_html/prompt`), pushing to `main` deploys automatically instead.
+   `public_html`), pushing to `main` deploys automatically instead.
+   **Do not upload `backend/` to the static site folder** — it is a
+   separate Node server (see `backend/README.md`); it needs its own
+   Node host, and it needs a real Gemini and/or Claude API key in its
+   environment before it can refine anything. Until then the site works
+   fully with its built-in generator.
 4. Visit https://prompt.graphixdesign.agency/ — the app should load.
    DNS / SSL for a new subdomain can take a few minutes to settle; if the
    page does not load yet, wait and retry.

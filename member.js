@@ -70,6 +70,130 @@ async function generateImage() {
   }
 }
 
+
+/* ---- Reference upload + style match (v1.2) ----
+   Files are previewed in this browser only (object URLs / data URLs in
+   memory) and are never uploaded anywhere. The description fields are
+   saved to localStorage (gps_reference_desc) so the block survives a
+   reload; the files themselves are not stored. The block follows the
+   reference-fidelity rules: lock the reference, same person/product/
+   location, no redesign, no added effects, people or actions. */
+var refFiles = { images: [], video: null };
+
+function renderRefPreview() {
+  var host = $('refPreview'); if (!host) return;
+  host.innerHTML = '';
+  refFiles.images.forEach(function (f, i) {
+    var img = document.createElement('img');
+    img.className = 'ref-thumb'; img.alt = 'Reference image ' + (i + 1) + ': ' + f.name;
+    img.src = f.dataUrl; host.appendChild(img);
+  });
+  if (refFiles.video) {
+    var v = document.createElement('video');
+    v.className = 'ref-thumb'; v.controls = true; v.src = refFiles.video.url;
+    v.setAttribute('aria-label', 'Reference video: ' + refFiles.video.name);
+    host.appendChild(v);
+  }
+  var st = $('refStatus');
+  if (st) st.textContent = refFiles.images.length + ' reference image(s)' + (refFiles.video ? ', 1 reference video (' + refFiles.video.name + ')' : '') + ' loaded — preview only, in this browser.';
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise(function (resolve, reject) {
+    var r = new FileReader(); r.onload = function () { resolve(r.result); }; r.onerror = reject; r.readAsDataURL(file);
+  });
+}
+
+function buildRefBlock() {
+  var subject = ($('refSubject').value || '').trim();
+  var product = ($('refProduct').value || '').trim();
+  var colours = ($('refColours').value || '').trim();
+  var lighting = ($('refLighting').value || '').trim();
+  var camera = ($('refCamera').value || '').trim();
+  var mood = ($('refMood').value || '').trim();
+  var files = [];
+  refFiles.images.forEach(function (f) { files.push('image: ' + f.name); });
+  if (refFiles.video) files.push('video: ' + refFiles.video.name);
+  if (!subject && !product && !files.length) {
+    $('refBlock').textContent = 'Upload a reference image or video and fill in at least the subject or the product first.';
+    return null;
+  }
+  var block = 'REFERENCE MATCH — lock this reference exactly.\n'
+    + (files.length ? 'Reference file(s): ' + files.join(', ') + '.\n' : '')
+    + (subject ? 'Subject / person: ' + subject + '. Keep the same face, hair, outfit and expression — do not change the person.\n' : '')
+    + (product ? 'Product: ' + product + '. Show it exactly as in the reference — do not redesign the packet, bottle or label, do not change its colours or text.\n' : '')
+    + (mood ? 'Setting / location: ' + mood + '. Keep the same location — do not move the scene.\n' : '')
+    + (colours ? 'Colours: ' + colours + '.\n' : '')
+    + (lighting ? 'Lighting: ' + lighting + '.\n' : '')
+    + (camera ? 'Camera: ' + camera + '.\n' : '')
+    + 'Style match: match the reference\'s look exactly. No added effects — no colour grade, beauty filter, cinematic styling, noise or overexposure. No extra people, no extra products, no extra actions. If the output differs from the reference, fix only the difference named and keep everything else unchanged.';
+  $('refBlock').textContent = block;
+  try {
+    localStorage.setItem('gps_reference', JSON.stringify({ block: block, desc: { subject: subject, product: product, colours: colours, lighting: lighting, camera: camera, mood: mood }, at: new Date().toISOString() }));
+    localStorage.setItem('gps_reference_desc', JSON.stringify({ subject: subject, product: product, colours: colours, lighting: lighting, camera: camera, mood: mood }));
+  } catch (e) {}
+  return block;
+}
+
+function restoreRefDesc() {
+  var d = store.get('gps_reference_desc', null); if (!d) return;
+  ['Subject', 'Product', 'Colours', 'Lighting', 'Camera', 'Mood'].forEach(function (k) {
+    var el = $('ref' + k); if (el && d[k.toLowerCase()]) el.value = d[k.toLowerCase()];
+  });
+  var saved = store.get('gps_reference', null);
+  if (saved && saved.block) $('refBlock').textContent = saved.block;
+}
+
+/* ---- Research URL (v1.2) ----
+   A static page cannot fetch an arbitrary URL from the browser (CORS),
+   so this uses the backend's /api/research when one is configured
+   (window.GPS_BACKEND_URL or localStorage gps_backend_url). Without a
+   backend it says so honestly and the member pastes title/description. */
+function getBackendUrl() {
+  try { return (window.GPS_BACKEND_URL || '') || (JSON.parse(localStorage.getItem('gps_backend_url') || '""') || ''); } catch (e) { return ''; }
+}
+
+async function fetchResearch() {
+  var url = ($('researchUrl').value || '').trim();
+  var st = $('researchStatus');
+  if (!url) { st.textContent = 'Paste a page URL first.'; return; }
+  var backend = getBackendUrl();
+  if (!backend) {
+    st.textContent = 'No backend is configured, so this page cannot fetch the URL (browser rules block it — CORS). The backend does the fetching: see backend/README.md. For now, paste the page title and description below — they will be used as research context.';
+    return;
+  }
+  st.textContent = 'Fetching via the backend…';
+  try {
+    var res = await fetch(backend.replace(/\/$/, '') + '/api/research?url=' + encodeURIComponent(url));
+    var data = await res.json();
+    if (!res.ok || !data.research) throw new Error(data.error || 'research_failed');
+    $('researchTitle').value = data.research.title || '';
+    $('researchDesc').value = (data.research.description ? data.research.description + '\n\n' : '') + (data.research.text || '').slice(0, 800);
+    st.textContent = 'Research fetched from ' + url + ' — title and description filled in. Edit them before using.';
+    saveResearch();
+  } catch (e) {
+    st.textContent = 'Research fetch did not work (' + e.message + '). Paste the title and description yourself below.';
+  }
+}
+
+function saveResearch() {
+  try {
+    localStorage.setItem('gps_research', JSON.stringify({
+      url: ($('researchUrl').value || '').trim(),
+      title: ($('researchTitle').value || '').trim(),
+      description: ($('researchDesc').value || '').trim(),
+      at: new Date().toISOString(),
+    }));
+  } catch (e) {}
+}
+
+function restoreResearch() {
+  var r = store.get('gps_research', null); if (!r) return;
+  if ($('researchUrl') && r.url) $('researchUrl').value = r.url;
+  if ($('researchTitle') && r.title) $('researchTitle').value = r.title;
+  if ($('researchDesc') && r.description) $('researchDesc').value = r.description;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   renderMember();
   var signin = $('memberSignin');
@@ -85,6 +209,43 @@ document.addEventListener('DOMContentLoaded', function () {
   if (signout) signout.onclick = function () { try { localStorage.removeItem('gps_member'); } catch (e) {} renderMember(); };
   var gen = $('generateImageBtn');
   if (gen) gen.onclick = generateImage;
+  // Reference upload + style match (v1.2)
+  restoreRefDesc(); restoreResearch();
+  var refImg = $('refImages');
+  if (refImg) refImg.addEventListener('change', function () {
+    var files = Array.prototype.slice.call(refImg.files || []).slice(0, 6);
+    Promise.all(files.map(function (f) { return readFileAsDataUrl(f).then(function (d) { return { name: f.name, dataUrl: d }; }); }))
+      .then(function (loaded) { refFiles.images = loaded; renderRefPreview(); });
+  });
+  var refVid = $('refVideo');
+  if (refVid) refVid.addEventListener('change', function () {
+    var f = (refVid.files || [])[0]; if (!f) return;
+    refFiles.video = { name: f.name, url: URL.createObjectURL(f) };
+    renderRefPreview();
+    $('refStatus').textContent += ' Tip: pause the video on the frame you want to match and describe that frame in the fields below.';
+  });
+  var buildBtn = $('buildRefBtn');
+  if (buildBtn) buildBtn.onclick = function () { buildRefBlock(); };
+  var clearRef = $('clearRefBtn');
+  if (clearRef) clearRef.onclick = function () {
+    refFiles = { images: [], video: null };
+    ['refSubject', 'refProduct', 'refColours', 'refLighting', 'refCamera', 'refMood'].forEach(function (id) { var el = $(id); if (el) el.value = ''; });
+    renderRefPreview(); $('refBlock').textContent = 'No reference block yet.';
+    try { localStorage.removeItem('gps_reference'); localStorage.removeItem('gps_reference_desc'); } catch (e) {}
+  };
+  var addRef = $('addRefToPromptBtn');
+  if (addRef) addRef.onclick = function () {
+    var block = buildRefBlock(); if (!block) return;
+    var ta = $('imagePrompt');
+    ta.value = (ta.value.trim() ? ta.value.trim() + '\n\n' : '') + block;
+    $('imgStatus').textContent = 'Reference block added to your prompt — it now locks the reference in.';
+  };
+  // Research URL (v1.2)
+  var fetchBtn = $('fetchResearchBtn');
+  if (fetchBtn) fetchBtn.onclick = fetchResearch;
+  ['researchUrl', 'researchTitle', 'researchDesc'].forEach(function (id) {
+    var el = $(id); if (el) el.addEventListener('input', saveResearch);
+  });
   var copyBtn = $('copyImagePromptBtn');
   if (copyBtn) copyBtn.onclick = function () {
     var t = $('imagePrompt').value || '';

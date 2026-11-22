@@ -266,12 +266,46 @@ function improvePrompt() {
    to the provider they chose. Claude's API does not allow direct browser
    calls (CORS), so it is honestly reported as unsupported from a static
    site — the built-in generator is used instead. */
+/* ---- Backend (v1.2) ----
+   One config point: window.GPS_BACKEND_URL (config.js) or the value
+   saved from the Connect AI box (localStorage gps_backend_url). The
+   backend holds the Gemini/Claude keys on the server, so the browser
+   never sees them — and it is the only way Claude works at all, since
+   Claude's API does not allow direct browser calls. */
+function getBackendUrl() {
+  try { return (window.GPS_BACKEND_URL || '') || store.get('gps_backend_url', ''); } catch (e) { return ''; }
+}
+async function refineViaBackend(prompt) {
+  const backend = getBackendUrl();
+  if (!backend) return { tried: false };
+  try {
+    const ref = store.get('gps_reference', null);
+    const research = store.get('gps_research', null);
+    const res = await fetch(backend.replace(/\/$/, '') + '/api/refine', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt,
+        provider: (getAIKey() && getAIKey().provider) || '',
+        reference: ref && ref.block ? ref.block : '',
+        researchUrl: research && research.url ? research.url : '',
+        researchText: research && research.description ? research.description : '',
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.text) return { tried: true, ok: true, text: data.text, provider: data.provider || 'backend' };
+    return { tried: true, ok: false, error: (data && data.error) || ('backend_' + res.status) };
+  } catch (e) {
+    return { tried: true, ok: false, error: String(e.message || e) };
+  }
+}
 function getAIKey() { return store.get('gps_ai_key', null); }
 function renderKeyStatus() {
   const el = $('keyStatus'); if (!el) return;
   const k = getAIKey();
-  el.textContent = k ? `Linked: ${k.provider} (key saved in this browser only)` : 'No key linked — built-in generator is active.';
+  const backend = getBackendUrl();
+  el.textContent = (backend ? `Backend: ${backend} — ` : 'No backend set — ') + (k ? `key linked: ${k.provider} (saved in this browser only)` : 'no key linked — built-in generator is active.');
   const sel = $('aiProvider'); if (sel && k) sel.value = k.provider;
+  const be = $('backendUrl'); if (be && backend) be.value = backend;
 }
 async function refineWithAI(prompt) {
   const k = getAIKey();
@@ -308,8 +342,23 @@ async function refineWithAI(prompt) {
   }
 }
 async function enhanceAfterGenerate() {
+  if (!state.lastPrompt) return;
+  // 1) Backend first (Gemini / Claude, keys on the server only).
+  const via = await refineViaBackend(state.lastPrompt);
+  if (via.tried && via.ok && via.text.trim()) {
+    state.lastPrompt = via.text.trim();
+    $('output').textContent = via.text.trim();
+    try { localStorage.setItem('gps_last_prompt', JSON.stringify({ title: state.lastTitle, prompt: via.text.trim(), kind: state.kind, tool: state.tool, at: new Date().toISOString() })); } catch {}
+    $('statusLine').textContent = 'Refined live via the backend (' + via.provider + ').';
+    updateCounts();
+    return;
+  }
+  if (via.tried && !via.ok) {
+    $('statusLine').textContent = 'Backend refine did not work (' + via.error + ') — falling back to the built-in prompt, or your browser key if linked.';
+  }
+  // 2) Browser key (Gemini / OpenAI direct; Claude cannot be called from a browser).
   const k = getAIKey();
-  if (!k || !k.key || !state.lastPrompt) return;
+  if (!k || !k.key) return;
   const refined = await refineWithAI(state.lastPrompt);
   if (refined && refined.trim()) {
     state.lastPrompt = refined.trim();
@@ -384,6 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const clearKeyBtn = $('clearKeyBtn');
   if (clearKeyBtn) clearKeyBtn.onclick = () => { try { localStorage.removeItem('gps_ai_key'); } catch {} renderKeyStatus(); $('statusLine').textContent = 'AI key removed.'; };
+  const saveBackendBtn = $('saveBackendBtn');
+  if (saveBackendBtn) saveBackendBtn.onclick = () => {
+    const u = ($('backendUrl').value || '').trim();
+    if (!u) { $('keyStatus').textContent = 'Paste the backend URL first (e.g. http://localhost:3000 while testing).'; return; }
+    store.set('gps_backend_url', u);
+    renderKeyStatus();
+    $('statusLine').textContent = 'Backend linked: ' + u + ' — Generate will try it first.';
+  };
+  const clearBackendBtn = $('clearBackendBtn');
+  if (clearBackendBtn) clearBackendBtn.onclick = () => { try { localStorage.removeItem('gps_backend_url'); } catch {} const be = $('backendUrl'); if (be) be.value = ''; renderKeyStatus(); $('statusLine').textContent = 'Backend removed — built-in generator is active.'; };
   // Deep links from the supporting pages: ?kind=video|image&brief=...
   try {
     const params = new URLSearchParams(location.search);

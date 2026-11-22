@@ -20,10 +20,11 @@
 <header class="topbar">
   <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
   <nav class="topnav site-nav" aria-label="Main navigation">
-    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html" class="active" aria-current="page">Member Area</a><a href="contact.html">Contact</a><a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+    <a href="index.html">Builder</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html" class="active" aria-current="page">Member Area</a>
   </nav>
 </header>
 <main class="page">
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
   <p class="kicker">(06) — Member Area</p>
   <h1>Check your prompt as an image.</h1>
   <p class="lead">Generate a prompt in the Builder, then come here and see whether the image it makes actually matches what you asked for.</p>
@@ -49,6 +50,42 @@
 
     <label for="imagePrompt">Prompt to check as an image</label>
     <textarea id="imagePrompt" rows="4" placeholder="Paste a prompt here, or generate one in the Builder first."></textarea>
+
+    <h3>Reference — upload images or a video to match the style</h3>
+    <p class="hint">Lock the reference first: upload the exact person, product or place the output must match. The style block below describes it exactly — same person, same product, same location — and never redesigns it, adds effects, or adds people, places or actions that are not in the reference. (Reference-fidelity rule: fix only what you name, change nothing else.) Files are previewed in this browser only and are not uploaded anywhere.</p>
+    <label for="refImages">Reference images</label>
+    <input id="refImages" type="file" accept="image/*" multiple>
+    <label for="refVideo">Reference video (short clip — or one frame from it)</label>
+    <input id="refVideo" type="file" accept="video/*">
+    <div id="refPreview" class="ref-grid" aria-live="polite"></div>
+    <p id="refStatus" class="hint" role="status"></p>
+    <div class="field-grid">
+      <div><label class="field-label" for="refSubject">Who / what is in the reference?</label><input id="refSubject" type="text" placeholder="e.g. Jeewa, long dark hair, teal kurta"></div>
+      <div><label class="field-label" for="refProduct">Product (exactly as shown)</label><input id="refProduct" type="text" placeholder="e.g. Maharaja Roasted Red Rice Flour packet, 1kg"></div>
+      <div><label class="field-label" for="refColours">Colours</label><input id="refColours" type="text" placeholder="e.g. warm cream, teal, hot orange"></div>
+      <div><label class="field-label" for="refLighting">Lighting</label><input id="refLighting" type="text" placeholder="e.g. natural imperfect daylight, no studio light"></div>
+      <div><label class="field-label" for="refCamera">Camera</label><input id="refCamera" type="text" placeholder="e.g. iPhone selfie, handheld at arm's length, 9:16"></div>
+      <div><label class="field-label" for="refMood">Mood / setting</label><input id="refMood" type="text" placeholder="e.g. bright home kitchen, white tiles, wooden counter"></div>
+    </div>
+    <div class="mode-row">
+      <button class="btn btn-orange" id="buildRefBtn" type="button">Build “match this reference” block →</button>
+      <button class="btn btn-ghost" id="clearRefBtn" type="button">Clear references</button>
+    </div>
+    <pre id="refBlock" class="output" style="min-height:90px">No reference block yet. Upload a reference and fill in the fields above, then build the block.</pre>
+    <div class="mode-row"><button class="btn btn-ghost" id="addRefToPromptBtn" type="button">Add this block to my prompt ↑</button></div>
+
+    <h3>Research — paste a URL to research</h3>
+    <p class="hint">Give a page to research and its facts become context in the prompt. A static page cannot fetch an arbitrary URL from your browser (the site's own rules block it — CORS), so the <strong>backend</strong> fetches it server-side. If no backend is configured, paste the page's title and description yourself below.</p>
+    <label for="researchUrl">Page URL to research</label>
+    <input id="researchUrl" type="text" placeholder="https://example.com/article" inputmode="url">
+    <div class="mode-row">
+      <button class="btn btn-orange" id="fetchResearchBtn" type="button">Fetch research →</button>
+      <span id="researchStatus" class="hint" role="status"></span>
+    </div>
+    <label class="field-label" for="researchTitle">Page title</label>
+    <input id="researchTitle" type="text" placeholder="Title of the page you researched">
+    <label class="field-label" for="researchDesc">Page description / key facts</label>
+    <textarea id="researchDesc" rows="3" placeholder="What the page says — the facts your prompt should use."></textarea>
     <p id="imgKeyStatus" class="hint"></p>
     <div class="mode-row">
       <button class="btn btn-orange" id="generateImageBtn">Generate image to check →</button>
@@ -56,15 +93,18 @@
     </div>
     <p id="imgStatus" class="status" role="status"></p>
     <div id="imgResult"></div>
-    <p class="notice"><strong>Honest note:</strong> an image is only generated when you have linked your own image API key (link it in <a href="index.html#connectAI">Connect AI on the Builder page</a> — OpenAI image generation is supported from the browser). Without a key, no image is generated or faked: you get the prompt ready to copy, plus links to open it in ChatGPT / DALL·E, Gemini or Adobe Firefly, so you can check the result there. Gemini and Claude do not offer a direct browser image call from a static site, so with those linked the page says so and gives you the links instead.</p>
+    <p class="notice"><strong>Honest note:</strong> an image is only generated when you have linked your own image API key (link it in <a href="index.html#connectAI">Connect AI on the Builder page</a> — OpenAI image generation is supported from the browser). Without a key, no image is generated or faked: you get the prompt ready to copy, plus links to open it in ChatGPT / DALL·E, Gemini or Adobe Firefly, so you can check the result there. Gemini and Claude do not offer a direct browser image call from a static site, so with those linked the page says so and gives you the links instead. Reference files are previewed locally only — they are never uploaded to any server. Research URLs are fetched by the optional backend (see backend/README.md); without it, use the title and description fields above.</p>
   </div>
   <p><a class="btn btn-ghost" href="index.html">← Back to the Builder</a></p>
 </main>
 <footer class="footer">
-  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a></nav>
+  <nav class="site-nav footer-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a><a href="index.html#library">Library</a><a href="index.html#history">History</a><a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a></nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
-  <p class="hint">Built for Graphix Design Agency, Colombo. · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
+<script src="fish.js"></script>
+<script src="pages.js"></script>
+<script src="config.js"></script>
 <script src="member.js"></script>
 </body>
 </html>
