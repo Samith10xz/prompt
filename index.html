@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graphix Prompt Studio — We write prompts that move.</title>
+<meta name="description" content="Describe the job in one sentence. Direct it with clicks. Get a prompt built to spec.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></div>
+  <nav class="topnav">
+    <a href="#builder">Builder</a>
+    <a href="#library">Library <span id="savedCount" class="pill-count">0</span></a>
+    <a href="#history">History</a>
+    <a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <p class="kicker">(01) — Prompt Studio</p>
+  <h1>We write prompts<br>that <em>move.</em></h1>
+  <p class="sub">Describe the job in one sentence. Direct it with clicks. Get a prompt built to spec.</p>
+  <div class="hero-actions">
+    <button class="btn btn-orange" onclick="document.getElementById('brief').focus()">Start a brief →</button>
+    <button class="btn btn-ghost" onclick="loadTemplate('maharaja')">Try the Maharaja UGC video</button>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="marquee-track">
+  <span>Image ✦ Video &amp; UGC ✦ Social Copy ✦ SEO &amp; Content ✦ Brand &amp; Logo ✦ Chat Prompt ✦&nbsp;</span>
+  <span>Image ✦ Video &amp; UGC ✦ Social Copy ✦ SEO &amp; Content ✦ Brand &amp; Logo ✦ Chat Prompt ✦&nbsp;</span>
+</div></div>
+
+<main class="layout" id="builder">
+  <!-- LEFT: kinds + templates -->
+  <aside class="col left">
+    <section>
+      <h2 class="label">(02) What kind of work?</h2>
+      <div id="kindList" class="kind-list" role="tablist" aria-label="Prompt kinds"></div>
+    </section>
+    <section>
+      <h2 class="label">(03) Starter templates</h2>
+      <p class="hint">Real workflows from Graphix. Click one to fill the brief.</p>
+      <div id="templateList" class="template-list"></div>
+    </section>
+    <section>
+      <h2 class="label">(04) Target tool</h2>
+      <div id="toolList" class="chip-row" role="group" aria-label="Target tool"></div>
+      <p class="hint">The compiled prompt is tuned for the tool you pick.</p>
+    </section>
+  </aside>
+
+  <!-- CENTRE: builder -->
+  <section class="col centre">
+    <h2 class="label">(05) The brief</h2>
+    <label class="field-label" for="brief">What do you need done?</label>
+    <textarea id="brief" rows="4" placeholder="e.g. A 10-second Tamil UGC video for Maharaja Roasted Red Rice Flour — Jeewa shows only the packet, says dinner will be pittu, and how it tastes."></textarea>
+    <div class="field-grid">
+      <div>
+        <label class="field-label" for="company">Company or project</label>
+        <input id="company" type="text" placeholder="e.g. Parcel LK">
+      </div>
+      <div>
+        <label class="field-label" for="audience">Who will use the result?</label>
+        <input id="audience" type="text" placeholder="e.g. Sri Lankan customers on Facebook">
+      </div>
+    </div>
+
+    <h2 class="label">(06) Direction — click to direct</h2>
+    <div id="directionGroups"></div>
+
+    <div class="mode-row">
+      <button id="generateBtn" class="btn btn-orange btn-big">Generate prompt →</button>
+      <button id="improveBtn" class="btn btn-ghost btn-big" title="Paste a rough prompt in the brief box, then improve it">Improve a rough prompt</button>
+      <button id="clearBtn" class="btn btn-text">Clear</button>
+    </div>
+    <p id="statusLine" class="status" role="status"></p>
+
+    <section id="library" class="panel-block">
+      <h2 class="label">(08) Library — saved prompts</h2>
+      <input id="librarySearch" type="search" placeholder="Search saved prompts…" aria-label="Search saved prompts">
+      <div id="libraryList" class="saved-list"></div>
+    </section>
+
+    <section id="history" class="panel-block">
+      <h2 class="label">(09) History — last 30 generations</h2>
+      <div id="historyList" class="saved-list"></div>
+      <button id="clearHistoryBtn" class="btn btn-text">Clear history</button>
+    </section>
+  </section>
+
+  <!-- RIGHT: output -->
+  <aside class="col right">
+    <h2 class="label">(07) Compiled prompt</h2>
+    <div class="output-meta">
+      <span id="completeness">Completeness: 0%</span>
+      <span id="wordCount">0 words</span>
+    </div>
+    <pre id="output" class="output" aria-live="polite">Your compiled prompt will appear here.
+Pick a template, or write a brief and hit Generate.</pre>
+    <div id="extraOutput"></div>
+    <div class="output-actions">
+      <button id="copyBtn" class="btn btn-cream">Copy prompt</button>
+      <button id="saveBtn" class="btn btn-orange">Save to Library</button>
+    </div>
+    <p class="hint">Saved prompts and history are stored in this browser (localStorage) — nothing leaves your device.</p>
+  </aside>
+</main>
+
+<footer class="footer">
+  <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
