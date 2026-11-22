@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /member.html
+
+Sitemap: https://prompt.graphixdesign.agency/sitemap.xml

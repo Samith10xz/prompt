@@ -133,24 +133,86 @@ function updateCounts() {
   $('completeness').textContent = `Completeness: ${Math.min(100, Math.round((filled / 7) * 100))}%`;
 }
 
+/* Full detailed prompt builder (v1.1): every section is filled from the
+   brief, the company/audience fields and the direction chips, so the
+   output is a complete, ready-to-paste prompt — not a short one. */
+function pick(group, fallback) { return state.picks[group] || fallback; }
 function generatePrompt() {
   const brief = $('brief').value.trim();
   if (!brief) { $('statusLine').textContent = 'Write a brief first — one sentence is enough.'; $('brief').focus(); return null; }
   const kind = KINDS[state.kind];
-  const company = $('company').value.trim();
-  const audience = $('audience').value.trim();
+  const company = $('company').value.trim() || 'this project';
+  const audience = $('audience').value.trim() || 'the intended audience';
   const dir = directionText();
-  const title = company ? `${kind.label} prompt — ${company}` : `${kind.label} prompt`;
+  const title = $('company').value.trim() ? `${kind.label} prompt — ${$('company').value.trim()}` : `${kind.label} prompt`;
+  const hook = pick('Hook', pick('Goal', 'Open with the strongest line in the brief'));
+  const opening = state.kind === 'video' ? (pick('Hook', 'Story') + ' opening, in the first 2 seconds') : 'Open with the strongest line in the brief';
+  const goal = pick('Goal', 'Deliver exactly what the brief asks for, ready to use');
+  const style = pick('Style', pick('Tone', 'Clean, on-brand and specific'));
+  const camera = pick('Camera', 'As described in the brief');
+  const lighting = pick('Lighting', 'As described in the brief');
+  const duration = pick('Duration', 'As described in the brief');
+  const format = pick('Format', pick('Output', 'As described in the brief'));
+  const language = pick('Language', 'English');
+  const role = pick('Role', 'specialist');
 
-  let prompt = `You are a world-class ${kind.label.toLowerCase()} specialist working for ${company || 'this project'}${audience ? `, for ${audience}` : ''}.\n\nTASK\n${brief}\n\nTARGET TOOL\n${state.tool} — write the output so it can be pasted straight into ${state.tool} with no editing.`;
-  if (dir) prompt += `\n\nDIRECTION\n${dir}`;
+  let prompt =
+`ROLE
+You are a world-class ${kind.label.toLowerCase()} ${role} working for ${company}, for ${audience}. Write as if you have done this exact job a hundred times.
+
+SUBJECT / BRIEF
+${brief}
+
+COMPANY / PROJECT
+${company}
+
+AUDIENCE
+${audience} — write for them specifically: their language, their worries, what would make them stop, read, watch or buy.
+
+HOOK
+${hook}. The hook must land in the first line / first 2 seconds. No throat-clearing, no generic greeting.
+
+OPENING
+${opening}. Set the scene in one sentence, then get straight to the product, the offer or the idea.
+
+GOAL
+${goal}. Success means: the reader / viewer understands the offer, believes it, and knows exactly what to do next.
+
+STYLE
+${style}. Keep the voice consistent all the way through — no sudden changes of tone.
+
+CAMERA
+${camera}.
+
+LIGHTING
+${lighting}.
+
+DURATION
+${duration}.
+
+FORMAT
+${format}.
+
+LANGUAGE
+${language}. Say any product name exactly as written in the brief, in the same language and spelling.
+
+TARGET TOOL
+${state.tool} — write the output so it can be pasted straight into ${state.tool} with no editing, in that tool's own format and limits.`;
+  if (dir) prompt += `\n\nDIRECTION (from the chips you clicked)\n${dir}`;
   if (state.kind === 'video') {
-    prompt += `\n\nCONTINUITY\nKeep the same person, same location and same look across every clip. No transitions between clips — each clip must continue seamlessly from the one before it, as one continuous video.`;
+    prompt += `\n\nCONTINUITY
+Keep the same person, same location and same look across every clip. No transitions between clips — each clip must continue seamlessly from the one before it, as one continuous video. If the video is longer than one clip, split it into equal clips and describe the exact cut point: the next clip starts on the very same frame, pose and line the previous one ended on.`;
   }
   if (state.kind === 'image') {
-    prompt += `\n\nQUALITY\nPhotorealistic, sharp, correctly exposed, no distorted hands, no garbled text, no watermark.`;
+    prompt += `\n\nQUALITY
+Photorealistic, sharp, correctly exposed, natural skin and hands, no distorted hands or faces, no garbled text, no watermark, no extra objects, no washed-out colours.`;
   }
-  prompt += `\n\nOUTPUT\nGive the finished ${kind.label.toLowerCase()} result only, ready to use. Keep it tight, specific and on-brand: black, cream and hot orange where visuals are involved.`;
+  if (state.kind === 'video' && /maharaja/i.test(brief)) {
+    prompt += `\n\nPRODUCT RULE — MAHARAJA
+Show ONLY the given Maharaja Roasted Red Rice Flour packet. Do not change the packet design, do not show any cooking or making, and do not add other people. The speaker says in Tamil "Maharaja varuththa sivappu arisi maa", that dinner will be pittu, and how the taste is.`;
+  }
+  prompt += `\n\nOUTPUT SPEC
+Give the finished ${kind.label.toLowerCase()} result only, ready to use. Keep it tight, specific and on-brand: black, cream and hot orange where visuals are involved. Do not add explanations, apologies or meta-commentary — just the finished result, followed by nothing else.`;
 
   const variations = [
     `Shorter, punchier version: ${brief} Keep the same direction (${dir || 'as briefed'}), but cut every unnecessary word and lead with the strongest line.`,
@@ -173,6 +235,7 @@ function generatePrompt() {
     : 'No generic filler, no clichés, no exaggerated claims, no irrelevant hashtags, no off-brand tone.';
 
   state.lastPrompt = prompt; state.lastTitle = title;
+  try { localStorage.setItem('gps_last_prompt', JSON.stringify({ title, prompt, kind: state.kind, tool: state.tool, at: new Date().toISOString() })); } catch {}
   $('output').textContent = prompt;
   $('extraOutput').innerHTML =
     `<div class="extra"><h3>Negative prompt / avoid</h3><p>${esc(negative)}</p>` +
@@ -194,6 +257,67 @@ function improvePrompt() {
   $('statusLine').textContent = 'Improved. Copy it, or save it to your Library.';
   addHistory(state.lastTitle, improved);
   updateCounts();
+}
+
+/* ---- Connect AI (v1.1) ----
+   The user's own key is stored ONLY in this browser's localStorage
+   (gps_ai_key). Nothing is sent to Graphix. A live refine is attempted
+   only when a key is linked, and only from the user's browser directly
+   to the provider they chose. Claude's API does not allow direct browser
+   calls (CORS), so it is honestly reported as unsupported from a static
+   site — the built-in generator is used instead. */
+function getAIKey() { return store.get('gps_ai_key', null); }
+function renderKeyStatus() {
+  const el = $('keyStatus'); if (!el) return;
+  const k = getAIKey();
+  el.textContent = k ? `Linked: ${k.provider} (key saved in this browser only)` : 'No key linked — built-in generator is active.';
+  const sel = $('aiProvider'); if (sel && k) sel.value = k.provider;
+}
+async function refineWithAI(prompt) {
+  const k = getAIKey();
+  if (!k || !k.key) return null;
+  const note = $('statusLine');
+  try {
+    if (k.provider === 'claude') {
+      if (note) note.textContent = 'Claude is linked, but its API does not allow direct browser calls — using the built-in detailed prompt instead.';
+      return null;
+    }
+    if (k.provider === 'gemini') {
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(k.key), {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'Refine this prompt. Keep every fact, product name and direction exactly as written. Return only the refined prompt:\n\n' + prompt }] }] }),
+      });
+      if (!res.ok) throw new Error('Gemini returned ' + res.status);
+      const data = await res.json();
+      const text = data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+      return text || null;
+    }
+    // OpenAI
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + k.key },
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages: [
+        { role: 'system', content: 'Refine the prompt given. Keep every fact, product name and direction exactly as written. Return only the refined prompt.' },
+        { role: 'user', content: prompt }] }),
+    });
+    if (!res.ok) throw new Error('OpenAI returned ' + res.status);
+    const data = await res.json();
+    return (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || null;
+  } catch (e) {
+    if (note) note.textContent = 'Live AI refine did not work (' + e.message + ') — the built-in detailed prompt above is still the one to use.';
+    return null;
+  }
+}
+async function enhanceAfterGenerate() {
+  const k = getAIKey();
+  if (!k || !k.key || !state.lastPrompt) return;
+  const refined = await refineWithAI(state.lastPrompt);
+  if (refined && refined.trim()) {
+    state.lastPrompt = refined.trim();
+    $('output').textContent = refined.trim();
+    try { localStorage.setItem('gps_last_prompt', JSON.stringify({ title: state.lastTitle, prompt: refined.trim(), kind: state.kind, tool: state.tool, at: new Date().toISOString() })); } catch {}
+    $('statusLine').textContent = 'Refined live with your linked ' + k.provider + ' key.';
+    updateCounts();
+  }
 }
 
 function getLibrary() { return store.get('gps_library', []); }
@@ -245,8 +369,29 @@ function renderAll() { renderKinds(); renderTools(); renderDirections(); renderT
 document.addEventListener('DOMContentLoaded', () => {
   renderAll(); renderLibrary(); renderHistory(); updateCounts();
   ['brief', 'company', 'audience'].forEach(id => $(id).addEventListener('input', updatePreview));
-  $('generateBtn').onclick = generatePrompt;
+  $('generateBtn').onclick = () => { const p = generatePrompt(); if (p) enhanceAfterGenerate(); };
   $('improveBtn').onclick = improvePrompt;
+  // Connect AI wiring (v1.1)
+  renderKeyStatus();
+  const saveKeyBtn = $('saveKeyBtn');
+  if (saveKeyBtn) saveKeyBtn.onclick = () => {
+    const key = ($('aiKey').value || '').trim();
+    if (!key) { $('keyStatus').textContent = 'Paste your API key first.'; return; }
+    store.set('gps_ai_key', { provider: $('aiProvider').value, key });
+    $('aiKey').value = '';
+    renderKeyStatus();
+    $('statusLine').textContent = 'AI key linked — saved in this browser only.';
+  };
+  const clearKeyBtn = $('clearKeyBtn');
+  if (clearKeyBtn) clearKeyBtn.onclick = () => { try { localStorage.removeItem('gps_ai_key'); } catch {} renderKeyStatus(); $('statusLine').textContent = 'AI key removed.'; };
+  // Deep links from the supporting pages: ?kind=video|image&brief=...
+  try {
+    const params = new URLSearchParams(location.search);
+    const kind = params.get('kind');
+    if (kind && KINDS[kind]) { state.kind = kind; state.tool = KINDS[kind].tools[0]; state.picks = {}; renderAll(); }
+    const savedBrief = params.get('brief') || store.get('gps_pending_brief', '');
+    if (savedBrief) { $('brief').value = savedBrief; try { localStorage.removeItem('gps_pending_brief'); } catch {} updatePreview(); }
+  } catch {}
   $('clearBtn').onclick = () => { $('brief').value = ''; $('company').value = ''; $('audience').value = ''; state.picks = {}; state.lastPrompt = ''; $('output').textContent = 'Your compiled prompt will appear here.'; $('extraOutput').innerHTML = ''; renderDirections(); updatePreview(); $('statusLine').textContent = ''; };
   $('copyBtn').onclick = () => copyText(state.lastPrompt || $('output').textContent);
   $('saveBtn').onclick = saveToLibrary;

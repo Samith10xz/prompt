@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Area — Check Your Prompt as an Image | Graphix Prompt Studio</title>
+<meta name="description" content="Member Area for Graphix Prompt Studio: sign in locally, take a generated prompt and check the result as an image — with your own linked image API key, or by pasting it into your image tool.">
+<link rel="canonical" href="https://prompt.graphixdesign.agency/member.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Member Area — Check Your Prompt as an Image">
+<meta property="og:description" content="Sign in locally, take a generated prompt and check the result as an image.">
+<meta property="og:url" content="https://prompt.graphixdesign.agency/member.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Member Area — Graphix Prompt Studio">
+<meta name="twitter:description" content="Sign in locally, take a generated prompt and check the result as an image.">
+<meta name="robots" content="noindex, follow">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
+  <nav class="topnav site-nav" aria-label="Main navigation">
+    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html" class="active" aria-current="page">Member Area</a><a href="contact.html">Contact</a><a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="kicker">(06) — Member Area</p>
+  <h1>Check your prompt as an image.</h1>
+  <p class="lead">Generate a prompt in the Builder, then come here and see whether the image it makes actually matches what you asked for.</p>
+  <p class="notice"><strong>Local demo member area:</strong> there are no real accounts here yet. Signing in just saves your name and email in <em>this browser</em> (localStorage) — nothing is sent to a server, and it is not a real login. A real accounts system can be added later.</p>
+
+  <div class="member-box" id="signedOut">
+    <h2>Join the Member Area (local)</h2>
+    <label for="memberNameInput">Your name</label>
+    <input id="memberNameInput" type="text" placeholder="e.g. Dorothy">
+    <label for="memberEmailInput">Email</label>
+    <input id="memberEmailInput" type="email" placeholder="you@example.com">
+    <div class="mode-row"><button class="btn btn-orange" id="memberSignin">Sign in locally</button></div>
+    <p id="memberStatus" class="status" role="status"></p>
+  </div>
+
+  <div class="member-box" id="signedIn" style="display:none">
+    <h2>Welcome, <span id="memberName"></span></h2>
+    <p class="hint">Signed in locally as <span id="memberEmail"></span> — in this browser only.</p>
+    <button class="btn btn-text" id="memberSignout">Sign out</button>
+
+    <h3>Your last generated prompt</h3>
+    <pre id="lastPromptBox" class="output">No prompt generated yet in this browser.</pre>
+
+    <label for="imagePrompt">Prompt to check as an image</label>
+    <textarea id="imagePrompt" rows="4" placeholder="Paste a prompt here, or generate one in the Builder first."></textarea>
+    <p id="imgKeyStatus" class="hint"></p>
+    <div class="mode-row">
+      <button class="btn btn-orange" id="generateImageBtn">Generate image to check →</button>
+      <button class="btn btn-ghost" id="copyImagePromptBtn">Copy prompt</button>
+    </div>
+    <p id="imgStatus" class="status" role="status"></p>
+    <div id="imgResult"></div>
+    <p class="notice"><strong>Honest note:</strong> an image is only generated when you have linked your own image API key (link it in <a href="index.html#connectAI">Connect AI on the Builder page</a> — OpenAI image generation is supported from the browser). Without a key, no image is generated or faked: you get the prompt ready to copy, plus links to open it in ChatGPT / DALL·E, Gemini or Adobe Firefly, so you can check the result there. Gemini and Claude do not offer a direct browser image call from a static site, so with those linked the page says so and gives you the links instead.</p>
+  </div>
+  <p><a class="btn btn-ghost" href="index.html">← Back to the Builder</a></p>
+</main>
+<footer class="footer">
+  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation"><a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a></nav>
+  <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
+</footer>
+<script src="member.js"></script>
+</body>
+</html>

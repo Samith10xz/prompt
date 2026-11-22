@@ -3,15 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Graphix Prompt Studio — We write prompts that move.</title>
-<meta name="description" content="Describe the job in one sentence. Direct it with clicks. Get a prompt built to spec.">
+<title>Graphix Prompt Studio — AI Prompt Generator for Image, Video &amp; UGC | prompt.graphixdesign.agency</title>
+<meta name="description" content="Graphix Prompt Studio: describe the job in one sentence, direct it with clicks, and get a full, detailed prompt built to spec — for image, video & UGC, social copy, SEO, brand and chat. Free, by Graphix Design Agency, Colombo.">
+<link rel="canonical" href="https://prompt.graphixdesign.agency/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Graphix Prompt Studio — We write prompts that move.">
+<meta property="og:description" content="Describe the job in one sentence. Direct it with clicks. Get a full, detailed prompt built to spec.">
+<meta property="og:url" content="https://prompt.graphixdesign.agency/">
+<meta property="og:site_name" content="Graphix Prompt Studio">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Graphix Prompt Studio — We write prompts that move.">
+<meta name="twitter:description" content="Describe the job in one sentence. Direct it with clicks. Get a full, detailed prompt built to spec.">
 <link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Graphix Prompt Studio","url":"https://prompt.graphixdesign.agency/","publisher":{"@type":"Organization","name":"Graphix Design Agency","url":"https://graphixdesign.agency/","email":"hello@graphixdesign.agency","address":{"@type":"PostalAddress","addressLocality":"Colombo","addressCountry":"LK"}}}
+</script>
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></div>
-  <nav class="topnav">
-    <a href="#builder">Builder</a>
+  <div class="brand"><a href="index.html" style="text-decoration:none;color:inherit"><span class="reel" aria-hidden="true">▣</span> Graphix <span class="accent">Prompt Studio</span></a></div>
+  <nav class="topnav site-nav" aria-label="Main navigation">
+    <a href="index.html" class="active" aria-current="page">Builder</a>
+    <a href="about.html">About Us</a>
+    <a href="video-prompts.html">Video Prompts</a>
+    <a href="image-prompts.html">Image Prompts</a>
+    <a href="news.html">News</a>
+    <a href="member.html">Member Area</a>
+    <a href="contact.html">Contact</a>
     <a href="#library">Library <span id="savedCount" class="pill-count">0</span></a>
     <a href="#history">History</a>
     <a class="cta" href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency ↗</a>
@@ -19,19 +37,24 @@
 </header>
 
 <section class="hero">
-  <p class="kicker">(01) — Prompt Studio</p>
-  <h1>We write prompts<br>that <em>move.</em></h1>
-  <p class="sub">Describe the job in one sentence. Direct it with clicks. Get a prompt built to spec.</p>
-  <div class="hero-actions">
-    <button class="btn btn-orange" onclick="document.getElementById('brief').focus()">Start a brief →</button>
-    <button class="btn btn-ghost" onclick="loadTemplate('maharaja')">Try the Maharaja UGC video</button>
+  <div class="hero-grid">
+    <div>
+      <p class="kicker">(01) — Prompt Studio</p>
+      <h1>We write prompts<br>that <em>move.</em></h1>
+      <p class="sub">Describe the job in one sentence. Direct it with clicks. Get a prompt built to spec.</p>
+      <div class="hero-actions">
+        <button class="btn btn-orange" onclick="document.getElementById('brief').focus()">Start a brief →</button>
+        <button class="btn btn-ghost" onclick="loadTemplate('maharaja')">Try the Maharaja UGC video</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <canvas id="fishCanvas" class="fish-canvas" width="520" height="320" role="img" aria-label="An animated orange and cream fish swimming in a loop, like the fish on the Graphix Design Agency website"></canvas>
+      <p class="fish-caption">Swimming, like the fish on graphixdesign.agency — it never stops, and the loop has no jump.</p>
+    </div>
   </div>
 </section>
 
-<div class="marquee" aria-hidden="true"><div class="marquee-track">
-  <span>Image ✦ Video &amp; UGC ✦ Social Copy ✦ SEO &amp; Content ✦ Brand &amp; Logo ✦ Chat Prompt ✦&nbsp;</span>
-  <span>Image ✦ Video &amp; UGC ✦ Social Copy ✦ SEO &amp; Content ✦ Brand &amp; Logo ✦ Chat Prompt ✦&nbsp;</span>
-</div></div>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Image ✦ Video &amp; UGC ✦ Social Copy ✦ SEO &amp; Content ✦ Brand &amp; Logo ✦ Chat Prompt ✦&nbsp;</span><span>Image ✦ Video &amp; UGC ✦ Social Copy ✦ SEO &amp; Content ✦ Brand &amp; Logo ✦ Chat Prompt ✦&nbsp;</span></div></div>
 
 <main class="layout" id="builder">
   <!-- LEFT: kinds + templates -->
@@ -78,6 +101,25 @@
     </div>
     <p id="statusLine" class="status" role="status"></p>
 
+    <section class="connect-box" id="connectAI" aria-labelledby="connectAIHeading">
+      <h2 class="label" id="connectAIHeading">(10) Connect AI — optional, your own key</h2>
+      <p class="hint">The studio works fully offline with its built-in detailed generator — no key needed. If you link your own AI key, Generate can also ask that provider to refine the prompt. Your key is stored <strong>only in this browser</strong> (localStorage), is never sent to Graphix or to any server we run, and is only sent by your browser directly to the provider you choose.</p>
+      <label for="aiProvider">Provider</label>
+      <select id="aiProvider">
+        <option value="openai">OpenAI (ChatGPT)</option>
+        <option value="gemini">Google Gemini</option>
+        <option value="claude">Anthropic Claude</option>
+      </select>
+      <label for="aiKey">Your API key</label>
+      <input id="aiKey" type="password" placeholder="Paste your API key here — it stays in this browser" autocomplete="off">
+      <div class="mode-row">
+        <button id="saveKeyBtn" class="btn btn-orange">Link my key</button>
+        <button id="clearKeyBtn" class="btn btn-text">Remove key</button>
+        <span id="keyStatus" class="key-status" role="status"></span>
+      </div>
+      <p id="aiNote" class="notice"><strong>Honest note:</strong> live AI calls run from your browser, so they depend on the provider allowing browser calls. Gemini keys usually work directly. OpenAI keys often work, but may be blocked by the provider's browser rules. Claude's API does not allow direct browser calls (it needs a server in between), so with Claude linked the studio will tell you that and keep using the built-in generator — it will not pretend the call worked. Without any key, everything still works: the built-in generator produces the full detailed prompt below.</p>
+    </section>
+
     <section id="library" class="panel-block">
       <h2 class="label">(08) Library — saved prompts</h2>
       <input id="librarySearch" type="search" placeholder="Search saved prompts…" aria-label="Search saved prompts">
@@ -104,16 +146,21 @@ Pick a template, or write a brief and hit Generate.</pre>
     <div class="output-actions">
       <button id="copyBtn" class="btn btn-cream">Copy prompt</button>
       <button id="saveBtn" class="btn btn-orange">Save to Library</button>
+      <a class="btn btn-ghost" href="member.html">Check it as an image →</a>
     </div>
     <p class="hint">Saved prompts and history are stored in this browser (localStorage) — nothing leaves your device.</p>
   </aside>
 </main>
 
 <footer class="footer">
+  <nav class="site-nav" style="justify-content:center" aria-label="Footer navigation">
+    <a href="index.html">Builder</a><a href="about.html">About Us</a><a href="video-prompts.html">Video Prompts</a><a href="image-prompts.html">Image Prompts</a><a href="news.html">News</a><a href="member.html">Member Area</a><a href="contact.html">Contact</a>
+  </nav>
   <p><strong>graphix®</strong> — Graphix Prompt Studio · prompt.graphixdesign.agency</p>
-  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange.</p>
+  <p class="hint">Built for Graphix Design Agency, Colombo. Black · cream · hot orange. · <a href="https://graphixdesign.agency/" target="_blank" rel="noopener">graphixdesign.agency</a> · <a href="mailto:hello@graphixdesign.agency">hello@graphixdesign.agency</a></p>
 </footer>
 
+<script src="fish.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

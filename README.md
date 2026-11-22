@@ -27,14 +27,48 @@ Describe the job in one sentence. Direct it with clicks. Get a prompt built to s
 No server, database or API key is needed. Saved prompts and history live in the
 browser's `localStorage`, so nothing leaves the user's device.
 
+## What's new in v1.1 (2026-11-22)
+
+1. **Hero fish** — a JavaScript canvas fish (cream body, orange fins) swims on the right of the hero, in the style of the fish / "Scroll to swim" flow on graphixdesign.agency. It loops continuously with no jump at the loop point, and respects `prefers-reduced-motion` (one still frame).
+2. **Seamless orange banner** — the marquee track is exactly two identical halves translating −50%, so there is no gap in the loop.
+3. **Full detailed prompts** — Generate now produces a complete prompt with Role, Subject, Company, Audience, Hook, Opening, Goal, Style, Camera, Lighting, Duration, Format, Language, Target Tool, Direction, Continuity/Quality, Product Rules and Output Spec, plus negative prompt, 3 variations and tips.
+4. **Connect AI (optional, your own key)** — section (10) on the home page. Link an OpenAI, Gemini or Claude key; it is stored only in the visitor's browser localStorage, never sent to Graphix. Without a key the built-in detailed generator works fully. With a key, the studio tries a live refine from the browser: Gemini usually works, OpenAI often works, **Claude does not allow direct browser calls, so it honestly falls back to the built-in generator**. No key is hard-coded, and there is no backend.
+5. **Member Area** (`member.html`) — local demo only: sign in with a name/email stored in the browser, clearly labelled as not a real account system. A member can take the last generated prompt and check it as an image: with a linked OpenAI image key it calls the provider; without a key it shows the prompt ready to copy plus links to open it in ChatGPT/DALL·E, Gemini or Firefly. **No image is ever faked.**
+6. **Supporting pages** — About, Video Prompts, Image Prompts, News (3 sample posts), Contact and Member Area, all in the same design and linked from the top nav and footer on every page.
+7. **SEO** — unique title + description per page, Open Graph / Twitter tags, canonical links, semantic headings, alt text on the fish canvas, `sitemap.xml`, `robots.txt`, and JSON-LD (Organization + WebSite) on the home page.
+
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | The whole app page |
+| `index.html` | The whole app page (Builder) |
 | `style.css` | Black / cream / hot-orange styling |
-| `app.js` | Templates, generation, Library & History |
+| `app.js` | Templates, generation, Library & History, Connect AI |
+| `fish.js` | Hero fish canvas animation |
+| `member.js` | Member Area sign-in + image check |
+| `about.html` | About Us (supporting page) |
+| `video-prompts.html` | Video Prompt Generator (supporting page) |
+| `image-prompts.html` | Image Prompt Generator (supporting page) |
+| `news.html` | News / Blog with 3 sample posts |
+| `contact.html` | Contact (supporting page) |
+| `member.html` | Member Area (local demo) |
+| `sitemap.xml` | SEO sitemap |
+| `robots.txt` | SEO robots file |
 | `README.md` | This file |
+
+## Pages & SEO
+
+| Page | URL | SEO title | Meta description |
+| --- | --- | --- | --- |
+| Home / Builder | https://prompt.graphixdesign.agency/ | Graphix Prompt Studio — AI Prompt Generator for Image, Video & UGC | Graphix Prompt Studio: describe the job in one sentence, direct it with clicks, and get a full, detailed prompt built to spec — for image, video & UGC, social copy, SEO, brand and chat. Free, by Graphix Design Agency, Colombo. |
+| About Us | https://prompt.graphixdesign.agency/about.html | About Us — Graphix Prompt Studio \| Graphix Design Agency, Colombo | About Graphix Prompt Studio: the prompt generator built by Graphix Design Agency in Colombo, so creators, marketers and designers can turn one sentence into a full, detailed prompt. |
+| Video Prompts | https://prompt.graphixdesign.agency/video-prompts.html | Video Prompt Generator — UGC, Reels & Video Ads \| Graphix Prompt Studio | Generate detailed video prompts for UGC ads, Reels and video demos — hook, camera, lighting, duration and seamless multi-clip continuity, tuned for Runway, Veo, Kling, Pika and Sora. |
+| Image Prompts | https://prompt.graphixdesign.agency/image-prompts.html | Image Prompt Generator — Product Shots, Ads & Lifestyle Photos \| Graphix Prompt Studio | Generate detailed image prompts for product hero shots, ads and lifestyle photos — style, format, mood and lighting named, tuned for Midjourney, DALL·E, Firefly and Imagen. |
+| News | https://prompt.graphixdesign.agency/news.html | News — Prompt Tips & Studio Updates \| Graphix Prompt Studio | News from Graphix Prompt Studio: how to write better UGC video prompts, image prompts that look shot not generated, and studio updates from Graphix Design Agency, Colombo. |
+| Member Area | https://prompt.graphixdesign.agency/member.html | Member Area — Check Your Prompt as an Image \| Graphix Prompt Studio | Member Area for Graphix Prompt Studio: sign in locally, take a generated prompt and check the result as an image — with your own linked image API key, or by pasting it into your image tool. |
+| Contact | https://prompt.graphixdesign.agency/contact.html | Contact — Graphix Prompt Studio \| Graphix Design Agency, Colombo | Contact Graphix Prompt Studio and Graphix Design Agency in Colombo — hello@graphixdesign.agency. Ask about a prompt, a project, or the Studio itself. |
+
+Member Area is `noindex` + disallowed in robots.txt (it is a local demo, not a public landing page).
 
 ## Run it locally
 
@@ -56,8 +90,13 @@ The subdomain already exists in Hostinger hPanel. Its document root is:
 
 1. In hPanel, open **File Manager** for `graphixdesign.agency`.
 2. Go to `domains/graphixdesign.agency/public_html/prompt`.
-3. Upload `index.html`, `style.css` and `app.js` into that folder
-   (or upload a zip of this folder and extract it there).
+3. Upload all the site files into that folder: `index.html`, `style.css`,
+   `app.js`, `fish.js`, `member.js`, `about.html`, `video-prompts.html`,
+   `image-prompts.html`, `news.html`, `contact.html`, `member.html`,
+   `sitemap.xml`, `robots.txt` (and `README.md` if you want it on the server)
+   — or upload a zip of this folder and extract it there. With Hostinger
+   Git auto-deployment connected (Samith10xz/prompt, branch `main`, root
+   `public_html/prompt`), pushing to `main` deploys automatically instead.
 4. Visit https://prompt.graphixdesign.agency/ — the app should load.
    DNS / SSL for a new subdomain can take a few minutes to settle; if the
    page does not load yet, wait and retry.

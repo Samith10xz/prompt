@@ -76,3 +76,45 @@ textarea:focus,input:focus{outline:2px solid var(--orange);border-color:var(--or
 .footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center}
 @media (max-width:1080px){.layout{grid-template-columns:1fr 1fr}.col.right{grid-column:1/-1}}
 @media (max-width:680px){.layout{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr}.hero{padding:36px 18px 24px}}
+
+/* ---- v1.1 ---- */
+/* Hero: two columns — copy left, swimming fish right */
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.hero-visual{position:relative}
+.fish-canvas{width:100%;height:320px;display:block;border:1px solid var(--border);border-radius:var(--radius);background:radial-gradient(120% 120% at 70% 20%,#141414 0%,#0a0a0a 70%)}
+.fish-caption{color:var(--cream-dim);font-size:13px;text-align:center;margin-top:8px}
+/* Seamless marquee: track is exactly two identical halves; translating
+   -50% lands on the identical copy, so there is never a gap. */
+.marquee-track{display:flex;width:max-content;animation:scroll 22s linear infinite}
+.marquee-track span{flex:0 0 auto;padding-right:0}
+.marquee-track span + span{padding-left:0}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){.marquee-track{animation:none}}
+/* Site nav (all pages) */
+.site-nav{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.site-nav a.active{color:var(--orange)}
+/* Generic content pages */
+.page{max-width:900px;margin:0 auto;padding:48px 24px 56px}
+.page h1{font-size:clamp(36px,5vw,60px);line-height:1;letter-spacing:-.02em;margin:8px 0 16px;font-weight:900}
+.page h2{font-size:24px;margin:32px 0 10px}
+.page h3{font-size:18px;margin:24px 0 8px}
+.page p,.page li{color:var(--cream-dim);font-size:16px}
+.page li{margin-bottom:6px}
+.page .lead{font-size:19px;color:var(--cream)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin:18px 0}
+.card h3{margin-top:0}
+.news-list{display:grid;gap:16px;margin-top:20px}
+.news-item{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.news-item .date{color:var(--orange);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.news-item h2{margin:8px 0}
+.news-item h2 a{color:var(--cream);text-decoration:none}
+.news-item h2 a:hover{color:var(--orange)}
+/* Connect AI + Member */
+.connect-box,.member-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:28px}
+.connect-box label,.member-box label{display:block;font-weight:700;margin:12px 0 6px}
+.connect-box select,.connect-box input[type=password],.connect-box input[type=text],.member-box input[type=text],.member-box input[type=email]{width:100%;background:#000;color:var(--cream);border:1px solid var(--border);border-radius:10px;padding:12px;font:inherit}
+.notice{background:#1a1206;border:1px solid #5a3a00;border-radius:10px;padding:12px 14px;font-size:14px;color:var(--cream-dim);margin-top:12px}
+.notice strong{color:var(--cream)}
+.key-status{font-weight:700;color:var(--orange)}
+.result-img{max-width:100%;border-radius:10px;border:1px solid var(--border);margin-top:14px;display:block}
+@media (max-width:680px){.hero-grid{grid-template-columns:1fr}.fish-canvas{height:240px}}
