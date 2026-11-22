@@ -29,7 +29,7 @@
 </header>
 
 <section class="hero">
-  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="A soft, semi-transparent fish silhouette gliding in the background of the hero, like the fish on the Graphix Design Agency website"></canvas>
+  <canvas id="fishCanvas" class="fish-bg" role="img" aria-label="Two koi swimming in the background. Move the mouse to lead them, or tap the water to feed them."></canvas>
   <div class="hero-grid">
     <div>
       <p class="kicker">(01) — Prompt Studio</p>
@@ -48,16 +48,16 @@
 <main class="layout" id="builder">
   <!-- LEFT: kinds + templates -->
   <aside class="col left">
-    <section>
+    <section class="b-kinds">
       <h2 class="label">(02) What kind of work?</h2>
       <div id="kindList" class="kind-list" role="tablist" aria-label="Prompt kinds"></div>
     </section>
-    <section>
+    <section class="b-templates">
       <h2 class="label">(03) Starter templates</h2>
       <p class="hint">Real workflows from Graphix. Click one to fill the brief.</p>
       <div id="templateList" class="template-list"></div>
     </section>
-    <section>
+    <section class="b-tool">
       <h2 class="label">(04) Target tool</h2>
       <div id="toolList" class="chip-row" role="group" aria-label="Target tool"></div>
       <p class="hint">The compiled prompt is tuned for the tool you pick.</p>
@@ -66,6 +66,7 @@
 
   <!-- CENTRE: builder -->
   <section class="col centre">
+    <div class="b-brief">
     <h2 class="label">(05) The brief</h2>
     <label class="field-label" for="brief">What do you need done?</label>
     <textarea id="brief" rows="4" placeholder="e.g. A 10-second Tamil UGC video for Maharaja Roasted Red Rice Flour — Jeewa shows only the packet, says dinner will be pittu, and how it tastes."></textarea>
@@ -89,8 +90,9 @@
       <button id="clearBtn" class="btn btn-text">Clear</button>
     </div>
     <p id="statusLine" class="status" role="status"></p>
+    </div>
 
-    <section class="connect-box" id="connectAI" aria-labelledby="connectAIHeading">
+    <section class="connect-box b-connect" id="connectAI" aria-labelledby="connectAIHeading">
       <h2 class="label" id="connectAIHeading">(10) Connect AI — optional, your own key</h2>
       <p class="hint">The studio works fully offline with its built-in detailed generator — no key needed. If you link your own AI key, Generate can also ask that provider to refine the prompt. Your key is stored <strong>only in this browser</strong> (localStorage), is never sent to Graphix or to any server we run, and is only sent by your browser directly to the provider you choose.</p>
       <label for="aiProvider">Provider</label>
@@ -118,13 +120,13 @@
       <p id="aiNote" class="notice"><strong>Honest note:</strong> live AI calls from your browser depend on the provider allowing browser calls. Gemini keys usually work directly. OpenAI keys often work, but may be blocked by the provider's browser rules. Claude's API does not allow direct browser calls (it needs the backend in between), so with Claude linked only in the browser the studio will tell you that and keep using the built-in generator — it will not pretend the call worked. Without any key, everything still works: the built-in generator produces the full detailed prompt below.</p>
     </section>
 
-    <section id="library" class="panel-block">
+    <section id="library" class="panel-block b-library">
       <h2 class="label">(08) Library — saved prompts</h2>
       <input id="librarySearch" type="search" placeholder="Search saved prompts…" aria-label="Search saved prompts">
       <div id="libraryList" class="saved-list"></div>
     </section>
 
-    <section id="history" class="panel-block">
+    <section id="history" class="panel-block b-history">
       <h2 class="label">(09) History — last 30 generations</h2>
       <div id="historyList" class="saved-list"></div>
       <button id="clearHistoryBtn" class="btn btn-text">Clear history</button>
@@ -133,6 +135,7 @@
 
   <!-- RIGHT: output -->
   <aside class="col right">
+    <div class="b-output" id="outputCard">
     <h2 class="label">(07) Compiled prompt</h2>
     <div class="output-meta">
       <span id="completeness">Completeness: 0%</span>
@@ -147,6 +150,7 @@ Pick a template, or write a brief and hit Generate.</pre>
       <a class="btn btn-ghost" href="member.html">Check it as an image →</a>
     </div>
     <p class="hint">Saved prompts and history are stored in this browser (localStorage) — nothing leaves your device.</p>
+    </div>
   </aside>
 </main>
 

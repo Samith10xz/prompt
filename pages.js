@@ -95,7 +95,7 @@ function initDirectionBuilder() {
   });
 }
 
-/* Contact form: live validation + character count, honest sample note. */
+/* Contact form: live validation + character count; Send opens the visitor's email app. */
 function initContactForm() {
   var form = document.getElementById('contactForm');
   if (!form) return;
@@ -116,7 +116,11 @@ function initContactForm() {
       note.textContent = 'Please check: ' + (!c.okName ? 'a name (2+ letters). ' : '') + (!c.okEmail ? 'a valid email. ' : '') + (!c.okMsg ? 'a message of at least 10 characters.' : '');
       return;
     }
-    note.textContent = 'Sample form — nothing was sent. Please email hello@graphixdesign.agency instead — your message is ready to copy: "' + msg.value.trim().slice(0, 120) + (msg.value.trim().length > 120 ? '…' : '') + '"';
+    // No server: hand the message to the visitor's email app, ready to send.
+    var subject = 'Prompt Studio enquiry from ' + name.value.trim();
+    var body = msg.value.trim() + '\n\n— ' + name.value.trim() + ' (' + email.value.trim() + ')';
+    location.href = 'mailto:hello@graphixdesign.agency?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    note.textContent = 'Your email app should open with the message ready. If nothing opened, email hello@graphixdesign.agency (use "Copy our email").';
   });
   var copyBtn = document.getElementById('copyEmailBtn');
   if (copyBtn) copyBtn.addEventListener('click', function () {

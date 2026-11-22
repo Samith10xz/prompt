@@ -317,7 +317,7 @@ async function refineWithAI(prompt) {
       return null;
     }
     if (k.provider === 'gemini') {
-      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(k.key), {
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=' + encodeURIComponent(k.key), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: 'Refine this prompt. Keep every fact, product name and direction exactly as written. Return only the refined prompt:\n\n' + prompt }] }] }),
       });
@@ -418,8 +418,13 @@ function renderAll() { renderKinds(); renderTools(); renderDirections(); renderT
 document.addEventListener('DOMContentLoaded', () => {
   renderAll(); renderLibrary(); renderHistory(); updateCounts();
   ['brief', 'company', 'audience'].forEach(id => $(id).addEventListener('input', updatePreview));
-  $('generateBtn').onclick = () => { const p = generatePrompt(); if (p) enhanceAfterGenerate(); };
-  $('improveBtn').onclick = improvePrompt;
+  // v1.5: on phones the result sits below the brief, so bring it into view after Generate / Improve
+  const showResult = () => {
+    if (!window.matchMedia('(max-width: 768px)').matches) return;
+    const card = $('outputCard'); if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  };
+  $('generateBtn').onclick = () => { const p = generatePrompt(); if (p) { showResult(); enhanceAfterGenerate(); } };
+  $('improveBtn').onclick = () => { improvePrompt(); if ($('brief').value.trim()) showResult(); };
   // Connect AI wiring (v1.1)
   renderKeyStatus();
   const saveKeyBtn = $('saveKeyBtn');
