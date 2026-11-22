@@ -386,7 +386,7 @@ function addHistory(title, prompt) {
 function renderLibrary() {
   const q = ($('librarySearch').value || '').toLowerCase();
   const lib = getLibrary().filter(i => !q || (i.title + ' ' + i.prompt).toLowerCase().includes(q));
-  $('savedCount').textContent = getLibrary().length;
+  $('savedCount') && ($('savedCount').textContent = getLibrary().length); // pill was removed in the v1.2 slim menu; guard so Library still renders
   $('libraryList').innerHTML = lib.length ? lib.map(i =>
     `<div class="saved-item"><strong>${esc(i.title)}</strong><span class="meta">${esc(i.kind)} · ${esc(i.tool)} · ${new Date(i.savedAt).toLocaleString()}</span><div class="actions"><button class="mini-btn" data-copy="${i.id}">Copy</button><button class="mini-btn ${i.fav ? 'fav' : ''}" data-fav="${i.id}">${i.fav ? '★ Favourite' : '☆ Favourite'}</button><button class="mini-btn" data-del="${i.id}">Delete</button></div></div>`).join('')
     : '<p class="empty">Nothing saved yet. Generate a prompt and hit “Save to Library”.</p>';

@@ -27,6 +27,14 @@ Describe the job in one sentence. Direct it with clicks. Get a prompt built to s
 No server, database or API key is needed. Saved prompts and history live in the
 browser's `localStorage`, so nothing leaves the user's device.
 
+## What's new in v1.3 (2026-11-23) — full mobile responsiveness
+
+1. **Hamburger menu on phones** — up to 768px the 5-item top nav collapses into a clean Menu button (44px, `aria-expanded`, X icon when open). The menu is a slide-down panel; it closes when a link is chosen, on Escape, on a tap outside, or when the viewport grows back to desktop. Same 5 items; About/Contact/Library/History stay in the footer.
+2. **Builder stacks in phone order** — up to 768px the 3-column Builder becomes a single column: brief first, then kinds/templates, then the compiled prompt. Verified in a headless browser at 360px, 390px and 768px on all 7 pages: no horizontal overflow anywhere (`scrollWidth == innerWidth`), no page errors.
+3. **Hero scales down** — headline clamps to ~30px on small phones, buttons stack full-width, the background fish is dimmed to ~14–18% opacity on phones so it never overlaps text, and the orange marquee stays seamless.
+4. **Touch-friendly** — buttons, chips, tabs, nav links and inputs are at least 44px tall on touch widths; every input is 16px so iOS does not zoom on focus; member reference previews grid down to 2 columns and all images/videos fit the screen.
+5. **Bug fix found by the mobile check** — `app.js` referenced a `savedCount` pill that was removed in the v1.2 slim menu, so `renderLibrary()` threw on load and Library/History never rendered. Guarded now; Generate (401 words in the test) and History render correctly again.
+
 ## What's new in v1.2 (2026-11-23)
 
 1. **Slim menu** — the top nav keeps only 5 items: Builder, Video Prompts, Image Prompts, News, Member Area. Everything else (About Us, Contact, Library, History, graphixdesign.agency) moved to the footer on every page.
@@ -56,6 +64,7 @@ browser's `localStorage`, so nothing leaves the user's device.
 | `app.js` | Templates, generation, Library & History, Connect AI, backend-first refine |
 | `config.js` | One place to set the backend URL (`window.GPS_BACKEND_URL`, empty = no backend) |
 | `fish.js` | Subtle background fish silhouette on every hero (v1.2) |
+| `nav.js` | Mobile hamburger menu (v1.3): toggle, close on link/Escape/outside click |
 | `pages.js` | Shared interactivity for the supporting pages (tabs, accordions, filters, direction builders, contact form) |
 | `member.js` | Member Area sign-in + image check + reference upload + research URL |
 | `backend/server.js` | Node backend: Gemini + Claude refine, server-side research fetch |
