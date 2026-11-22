@@ -27,6 +27,14 @@ Describe the job in one sentence. Direct it with clicks. Get a prompt built to s
 No server, database or API key is needed. Saved prompts and history live in the
 browser's `localStorage`, so nothing leaves the user's device.
 
+## What's new in v1.4 (2026-11-23) — fix mobile animation (home page)
+
+Dorothy reported an animation issue on the home page on her phone. Headless mobile checks (360/390/768px, touch emulation, screenshots + canvas pixel probes) found three home-page faults:
+1. **The home hero fish was missing most of the time.** Its loop ran from off-screen right to x=180 and teleported back while still fully visible, so on a 360px phone it was off-screen ~60% of its 45s cycle — screenshots at 1.5s and 5.5s both showed no fish. The loop now travels edge to edge (off-screen right to off-screen left), so the fish is on screen ~93% of the cycle.
+2. **The fish was too faint to see on phones.** Canvas opacity 0.14 × body wash 0.10 came out at ~1–3% on screen (pixel probe: max alpha 71/255 in the canvas, ~10/255 on screen). Phone canvas opacity is now 0.30 and the washes are boosted ×1.9 on narrow canvases (max alpha 126/255) — still subtle and behind the text, but actually visible.
+3. **The orange marquee was wider than the phone screen** (16px, from −8px side margins plus the −1.2° rotation), held back only by `overflow-x:clip`, which older iOS Safari does not support — the page could be dragged sideways. The marquee is now exactly viewport-wide on phones (x=0, right=innerWidth in the checks), and `overflow-x:hidden` is set as a fallback before `clip`.
+Also fixed the same cause on the other pages: on every content page the fish canvas sat **in the page flow** as a 300px-tall blank black block above the hero text (`.page>*` overrode its absolute positioning). A higher-specificity rule now keeps it a background layer behind the text on all 7 pages — the empty band above "About Us" etc. is gone. And `fish.js` only reallocates the canvas when its size really changes, so scrolling on a phone (toolbar show/hide fires resize) no longer flickers it. Desktop behaviour is unchanged. Verified at 360/390/768px: no horizontal overflow, no console errors, fish visible in screenshots at 12s and 20s on the home hero at 390px.
+
 ## What's new in v1.3 (2026-11-23) — full mobile responsiveness
 
 1. **Hamburger menu on phones** — up to 768px the 5-item top nav collapses into a clean Menu button (44px, `aria-expanded`, X icon when open). The menu is a slide-down panel; it closes when a link is chosen, on Escape, on a tap outside, or when the viewport grows back to desktop. Same 5 items; About/Contact/Library/History stay in the footer.

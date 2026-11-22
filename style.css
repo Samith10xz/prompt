@@ -264,3 +264,47 @@ pre{white-space:pre-wrap}
   .hero h1{font-size:30px}
   .ref-grid{gap:8px}
 }
+
+/* ================= v1.4 — fix mobile animation =================
+   Bug found 2026-11-23 (headless mobile check, 360/390px + live-site diff):
+   1. On every content page (.page: About, Video, Image, News, Contact,
+      Member) the fish canvas was NOT a background. `.page>*` sets
+      position:relative;z-index:1 and comes later in the stylesheet than
+      `.fish-bg` at the same specificity, so it overrode the canvas's
+      position:absolute;z-index:0. The canvas sat IN the page flow as a
+      300px-tall blank black block above the hero text — a big empty gap
+      at the top of every content page on phones (and desktop).
+      Fix: a higher-specificity rule below, so the canvas is always an
+      absolute background layer behind the text, on every page.
+   2. The marquee strip was 16px wider than the viewport on phones
+      (margin -8px each side) plus a -1.2deg rotation, contained only by
+      overflow-x:clip — which older iOS Safari does not support, so the
+      page could be dragged sideways. Fix: no negative margins on phones,
+      and overflow-x:hidden as a fallback before clip.
+   3. fish.js now only reallocates the canvas when its size really
+      changes (see fish.js) instead of on every resize event. */
+
+/* The fish canvas is always a background layer — never in-flow, never
+   above the text. Specificity (0,2,0) beats `.page>*` / `.hero>*` (0,1,0). */
+.hero > .fish-bg,
+.page > .fish-bg{position:absolute;top:0;right:0;z-index:0;pointer-events:none}
+
+/* overflow-x:hidden first: fallback for browsers without overflow:clip
+   (older iOS Safari); clip wins where it is supported. */
+html,body{overflow-x:hidden;overflow-x:clip}
+
+@media (max-width:768px){
+  /* Marquee must not be wider than the viewport on phones: rotation of a
+     viewport-width strip adds ~1px, the old -8px margins added 16px. */
+  .marquee{margin:4px 0 20px}
+  /* The fish was dimmed to 0.14–0.18 on phones, which multiplied with the
+     faint washes made it ~1–3% on screen — effectively invisible. 0.30
+     keeps it subtle and behind the text, but actually visible. The drawn
+     washes are also boosted on narrow canvases (fish.js). */
+  .fish-bg{opacity:.3}
+  .page .fish-bg{opacity:.28}
+}
+@media (max-width:480px){
+  .fish-bg{opacity:.3}
+  .page .fish-bg{opacity:.28}
+}
