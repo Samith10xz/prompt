@@ -34,7 +34,7 @@ browser's `localStorage`, so nothing leaves the user's device.
 3. **Backend added to the repo** — `backend/` was described in v1.2 but never committed. It is now here: `server.js` (Gemini + Claude refine, safe research fetch that refuses private/local addresses, origin allow-list, per-IP rate limit), `package.json`, `.env.example` and `README.md`. Still not deployed — it needs an API key in the host's environment settings.
 4. **Gemini model updated** — the browser-key Gemini call used `gemini-2.0-flash`; it now uses `gemini-3.6-flash` (the backend reads `GEMINI_MODEL`, same default).
 5. **Contact form sends** — Send now opens the visitor's email app with the message ready to go to hello@graphixdesign.agency (it used to say "sample, nothing was sent").
-7. **Cache-proof releases (v1.5.1)** — the Hostinger CDN kept serving a week-old `style.css` and `fish.js` with the new pages, which left the home page blank. Every CSS/JS link now ends in `?v=1.5.1`; **bump that number in all `.html` files on each release**. `.htaccess` makes pages re-check on every visit, and hides `.md` and `.env` files.
+7. **Cache-proof releases (v1.5.1)** — the Hostinger CDN kept serving a week-old `style.css` and `fish.js` with the new pages, which left the home page blank. Every CSS/JS link now ends in `?v=1.5.2`; **bump that number in all `.html` files on each release**. `.htaccess` makes pages re-check on every visit, and hides `.md` and `.env` files.
 6. **Internal notes removed from public pages** — "starter content… to edit" notes on About, Contact and News are gone.
 
 ## What's new in v1.4 (2026-11-23) — fix mobile animation (home page)
